@@ -1,9 +1,9 @@
-// index.js
 // Import the web socket library
 const WebSocket = require("ws");
 // Load the .env file into memory so the code has access to the key
 const dotenv = require("dotenv");
 dotenv.config();
+
 const Speaker = require("speaker");
 const record = require("node-record-lpcm16");
 // Function to start recording audio
@@ -58,8 +58,6 @@ async function main() {
     bitDepth: 16, // PCM16 (16-bit audio)
     sampleRate: 24000, // Common sample rate (44.1kHz)
   });
-
-
   function handleOpen() {
     // Define what happens when the connection is opened
     const createConversationEvent = {
@@ -86,9 +84,8 @@ async function main() {
       },
     };
     ws.send(JSON.stringify(createResponseEvent));
-  }
+  }  
   ws.on("open", handleOpen);
-
   function handleMessage(messageStr) {
     const message = JSON.parse(messageStr);
     // Define what happens when a message is received
@@ -105,7 +102,8 @@ async function main() {
         break;
     }
   }
-  ws.on("message", handleMessage);
+  
+  ws.on("message", handleMessage);  
 }
 
 main();

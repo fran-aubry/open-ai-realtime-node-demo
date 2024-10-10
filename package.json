@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "node-record-lpcm16": "^1.0.1",
+    "speaker": "^0.5.5"
+  }
 }

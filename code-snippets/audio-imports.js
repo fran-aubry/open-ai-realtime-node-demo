@@ -1,9 +1,9 @@
-// index.js
 // Import the web socket library
 const WebSocket = require("ws");
 // Load the .env file into memory so the code has access to the key
 const dotenv = require("dotenv");
 dotenv.config();
+
 const Speaker = require("speaker");
 const record = require("node-record-lpcm16");
 // Function to start recording audio
@@ -52,60 +52,14 @@ async function main() {
           "OpenAI-Beta": "realtime=v1",
       },
   });
-  const base64AudioData = await startRecording();
-  const speaker = new Speaker({
-    channels: 1, // Mono or Stereo
-    bitDepth: 16, // PCM16 (16-bit audio)
-    sampleRate: 24000, // Common sample rate (44.1kHz)
-  });
-
-
   function handleOpen() {
-    // Define what happens when the connection is opened
-    const createConversationEvent = {
-      event_id: "datacamp_test",
-      type: "conversation.item.create",
-      item: {
-        type: "message",
-        role: "user",
-        content: [
-          {
-            type: "input_audio",
-            audio: base64AudioData,
-          },
-        ],
-      },
-    };
-    ws.send(JSON.stringify(createConversationEvent));
-    const createResponseEvent = {
-      type: "response.create",
-      event_id: "datacamp_test",
-      response: {
-        modalities: ["text", "audio"],
-        instructions: "Please assist the user.",
-      },
-    };
-    ws.send(JSON.stringify(createResponseEvent));
+    console.log("Connection is opened");
   }
   ws.on("open", handleOpen);
-
-  function handleMessage(messageStr) {
-    const message = JSON.parse(messageStr);
-    // Define what happens when a message is received
-    switch (message.type) {
-      case "response.audio.delta":
-        // We got a new audio chunk
-        const base64AudioChunk = message.delta;
-        const audioBuffer = Buffer.from(base64AudioChunk, "base64");
-        speaker.write(audioBuffer);
-        break;
-      case "response.audio.done":
-        speaker.end();
-        ws.close();
-        break;
-    }
+  function handleMessage(message) {
+    console.log(JSON.parse(message));
   }
-  ws.on("message", handleMessage);
+  ws.on("message", handleMessage);  
 }
 
 main();
