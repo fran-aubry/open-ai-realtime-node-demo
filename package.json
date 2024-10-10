@@ -1,0 +1,12 @@
+{
+  "name": "open-ai-realtime-node-demo",
+  "version": "1.0.0",
+  "description": "Demo on how to use the OpenAI real-time API with Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
