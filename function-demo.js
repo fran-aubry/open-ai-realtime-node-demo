@@ -42,6 +42,24 @@ function startRecording() {
   });
 };
 
+const functions = {
+  calculate_sum: (args) => args.a + args.b,
+}
+
+const sumTool = {
+  type: "function",
+  name: "calculate_sum",
+  description: "Use this function when asked to add number together, for example when asked 'What's 4 + 6'?.",
+  parameters: {
+      type: "object",
+      properties: {
+          "a": { "type": "number" },
+          "b": { "type": "number" }
+      },
+      required: ["a", "b"]
+  }
+}
+
 function main() {
   // Connect to the API
   const url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01";
@@ -79,6 +97,8 @@ function main() {
       response: {
         modalities: ["text", "audio"],
         instructions: "Please assist the user.",
+        tools: [sumTool],
+        tool_choice: "auto",
       },
     };
     ws.send(JSON.stringify(createResponseEvent));
@@ -99,7 +119,27 @@ function main() {
         speaker.end();
         ws.close();
         break;
-    }
+      case "response.function_call_arguments.done":
+        console.log(`Using function ${message.name} with arguments ${message.arguments}`);
+        // 1. Get the function information and call the function.
+        const function_name = message.name;
+        const function_arguments = JSON.parse(message.arguments);
+        const result = functions[function_name](function_arguments);
+        // 2. Send the result of the function call
+        const functionOutputEvent = {
+          type: "conversation.item.create",
+          item: {
+            type: "function_call_output",
+            role: "system",
+            output: `${result}`,
+          }
+        };
+        ws.send(JSON.stringify(functionOutputEvent));
+        // 3. Resquest a response
+        ws.send(JSON.stringify({type: "response.create"}));
+        break;
+      }
+
   }
   ws.on("message", handleMessage);
 }

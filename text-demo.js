@@ -19,7 +19,6 @@ function main() {
     // Define what happens when the connection is opened
     // Create and send an event to initiate a conversation
     const createConversationEvent = {
-      event_id: "datacamp_test",
       type: "conversation.item.create",
       item: {
         type: "message",
@@ -36,7 +35,6 @@ function main() {
     ws.send(JSON.stringify(createConversationEvent));
     const createResponseEvent = {
       type: "response.create",
-      event_id: "datacamp_test",
       response: {
           modalities: ["text"],
           instructions: "Please assist the user.",
