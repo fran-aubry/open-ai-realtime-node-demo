@@ -135,7 +135,7 @@ function main() {
           }
         };
         ws.send(JSON.stringify(functionOutputEvent));
-        // 3. Resquest a response
+        // 3. Request a response
         ws.send(JSON.stringify({type: "response.create"}));
         break;
       }
