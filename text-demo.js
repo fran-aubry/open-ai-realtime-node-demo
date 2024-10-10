@@ -5,9 +5,7 @@ const WebSocket = require("ws");
 const dotenv = require("dotenv");
 dotenv.config();
 
-async function main() {
-  
-
+function main() {
   // Connect to the API
   const url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01";
   const ws = new WebSocket(url, {
@@ -49,7 +47,7 @@ async function main() {
   }
   ws.on("open", handleOpen);
 
-  function handleMessage(messageStr) {
+  async function handleMessage(messageStr) {
     const message = JSON.parse(messageStr);
     // Define what happens when a message is received
     switch(message.type) {

@@ -1,4 +1,3 @@
-// index.js
 // Import the web socket library
 const WebSocket = require("ws");
 // Load the .env file into memory so the code has access to the key
@@ -43,7 +42,7 @@ function startRecording() {
   });
 };
 
-async function main() {
+function main() {
   // Connect to the API
   const url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01";
   const ws = new WebSocket(url, {
@@ -52,15 +51,14 @@ async function main() {
           "OpenAI-Beta": "realtime=v1",
       },
   });
-  const base64AudioData = await startRecording();
   const speaker = new Speaker({
     channels: 1, // Mono or Stereo
     bitDepth: 16, // PCM16 (16-bit audio)
     sampleRate: 24000, // Common sample rate (44.1kHz)
   });
 
-
-  function handleOpen() {
+  async function handleOpen() {
+    const base64AudioData = await startRecording();
     // Define what happens when the connection is opened
     const createConversationEvent = {
       event_id: "datacamp_test",
